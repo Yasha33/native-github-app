@@ -7,15 +7,15 @@ import UserScreen from '../screens/UserScreen';
 
 const Stack = createStackNavigator();
 
- export default function AppNavigation() {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator 
-        headerMode={null}
+export default function AppNavigation() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator
+         headerMode={null}
         initialRouteName="Home">
-          <Stack.Screen name="Home" component={MainScreen} options={{ title: 'Find user' }} />
-          <Stack.Screen name="Details" component={UserScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
-  }
+        <Stack.Screen name="Home" component={MainScreen} options={{ title: 'Find user' }} />
+        <Stack.Screen name="Details" component={UserScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}

@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { TouchableOpacity, StyleSheet, Image, Text, Dimensions } from 'react-native';
+import { Context } from '../context/context';
+import { useNavigation } from '@react-navigation/native';
 
-export default function ItemLists ({item}){
+export default function ItemLists({ item }) {
+    const { selectedUser } = useContext(Context);
+    const navigation = useNavigation();
+
+    const select = () => {
+        navigation.navigate('Details');
+        selectedUser(item.login);
+    }
     return (
-        <TouchableOpacity style={styles.button}>
-            <Image 
+        <TouchableOpacity
+            style={styles.button}
+            onPress={select}
+        >
+            <Image
                 style={styles.image}
-                source={{uri: item.avatar_url}}
+                source={{ uri: item.avatar_url }}
             />
             <Text style={styles.text}>{item.login}</Text>
         </TouchableOpacity>
@@ -14,7 +26,7 @@ export default function ItemLists ({item}){
 }
 
 const styles = StyleSheet.create({
-    button:{
+    button: {
         shadowColor: '#000',
         shadowRadius: 2,
         shadowOpacity: 0.3,
@@ -22,19 +34,20 @@ const styles = StyleSheet.create({
         elevation: 4,
         backgroundColor: '#f1f1f1',
         borderRadius: 10,
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        alignItems:'center',
-        marginBottom:10,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        marginBottom: 10,
+        width: '99%'
     },
-    image:{
-        height:100,
-        width:100,
-        borderRadius:10,
+    image: {
+        height: 100,
+        width: 100,
+        borderRadius: 10,
 
     },
-    text:{
-        maxWidth: Dimensions.get('window').width-170,
-        marginLeft:20
+    text: {
+        maxWidth: Dimensions.get('window').width - 170,
+        marginLeft: 20
     }
 })

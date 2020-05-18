@@ -1,9 +1,13 @@
-import { SEARCH } from './types'
+import { SEARCH, GET_USER } from './types'
 
 const handlers = {
     [SEARCH]: (state, { payload }) => ({
         ...state,
         users:[...payload]
+    }),
+    [GET_USER]: (state, {payload})=>({
+        ...state,
+        userInfo:{...payload}
     }),
 
     DEFAULT: state => state
