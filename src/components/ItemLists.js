@@ -4,12 +4,14 @@ import { Context } from '../context/context';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ItemLists({ item }) {
-    const { selectedUser } = useContext(Context);
+    const { selectedUser, loadingIndicatorOn,loadingIndicatorOff, loading } = useContext(Context);
     const navigation = useNavigation();
 
-    const select = () => {
+    const select = async() => {
+        loadingIndicatorOn();
+        await selectedUser(item.login);
+        loadingIndicatorOff();
         navigation.navigate('Details');
-        selectedUser(item.login);
     }
     return (
         <TouchableOpacity

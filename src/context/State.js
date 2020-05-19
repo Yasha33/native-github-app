@@ -3,17 +3,22 @@ import { Context } from './context';
 import { reducer } from './reducer';
 import axios from 'axios';
 import { Keyboard, Alert } from 'react-native';
-import { SEARCH, GET_USER } from './types';
+import { SEARCH, GET_USER, LOADING } from './types';
 
 
 const initialState = {
     users: [],
     userInfo: {},
+    loading: false,
 };
 export default function ({ children }) {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const searchUser = async (name) => {
+        if (!name){
+            Alert.alert('Incorect request');
+            return null
+        }
         Keyboard.dismiss()
         try {
             const response = await axios.get(`https://api.github.com/search/users?q=${name}`);
@@ -23,7 +28,7 @@ export default function ({ children }) {
             });
         }
         catch (e) {
-            Alert.alert('Возникла ошибка');
+            Alert.alert('Incorect request');
         }
     };
 
@@ -46,9 +51,24 @@ export default function ({ children }) {
             })
         }
         catch (e) {
-            Alert.alert('Ошибка', e);
+            Alert.alert('Incorect request');
         }
     }
+
+    const loadingIndicatorOn = ()=>{
+        dispatch({
+            type:LOADING,
+            payload:true
+        })
+
+    }
+    const loadingIndicatorOff = ()=>{
+       dispatch({
+           type:LOADING,
+           payload:false
+       })
+       
+   }
 
     return (
         <Context.Provider
@@ -57,6 +77,9 @@ export default function ({ children }) {
                 searchUser,
                 selectedUser,
                 userInfo: state.userInfo,
+                loading:state.loading,
+                loadingIndicatorOn,
+                loadingIndicatorOff
             }}
         >
             {children}
