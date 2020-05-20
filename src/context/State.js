@@ -24,8 +24,7 @@ export default function ({ children }) {
     const setStorage = async () => {
         try {
             const data = JSON.parse(await AsyncStorage.getItem(FAVORITE));
-            if (data)
-                setFavorite(data);
+            data && setFavorite(data);
         } catch (error) {
             console.log(error);
         }
@@ -109,12 +108,9 @@ export default function ({ children }) {
             const user = state.users.find(el => el.login === login);
             user.favorite = !status;
             setFavorite([...favorite, user]);
-        }
-        console.log('Шляпа');
-        
+        }    
         changeUsers(users);
     }
-
 
     return (
         <Context.Provider

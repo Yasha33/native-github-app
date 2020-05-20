@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import { TouchableOpacity, StyleSheet, Image, Text, Dimensions, Alert } from 'react-native';
+import { TouchableOpacity, StyleSheet, Image, Text, Dimensions } from 'react-native';
 import { Context } from '../context/context';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
@@ -14,27 +14,20 @@ export default function ItemLists({ item }) {
         loadingIndicator(false);
         navigation.navigate('Details');
     }
+    const favorite= ()=>changeFavoriteStatus(item.login,item.favorite);
 
-    const longPress = async () => {
-        // const status = await changeFavoriteStatus(item.login);
-        // Alert.alert(status);
-    }
-    const favotite= ()=>{
-        changeFavoriteStatus(item.login,item.favorite);
-    }
     return (
         
             <TouchableOpacity
                 style={styles.button}
                 onPress={select}
-                onLongPress={longPress}
             >
                 <Image
                     style={styles.image}
                     source={{ uri: item.avatar_url }}
                 />
                 <Text style={styles.text}>{item.login}</Text>
-                <TouchableOpacity style={styles.star} onPress={() => favotite()} >
+                <TouchableOpacity style={styles.star} onPress={favorite} >
                     {!item.favorite ? <AntDesign name="staro" size={24} color="black" /> : <AntDesign name="star" size={24} color="gold" />}
                 </TouchableOpacity>
             </TouchableOpacity>
@@ -69,6 +62,5 @@ const styles = StyleSheet.create({
     },
     star:{
         padding:15,
-        // borderWidth:1
     }
 })
