@@ -6,19 +6,21 @@ import { Context } from '../context/context'
 
 export default function Menu(props) {
     const inputEl = useRef(null);
-    const { searchUser, loadFavorite, loadingIndicator } = useContext(Context);
+    const { searchUser, loadFavorite, loadingIndicator,inFavoriteChange} = useContext(Context);
     const [searchName, setSearchName] = useState('');
     const [changeFavorite, setChangeFavorite] = useState(false);
     
     const favotite = () => {
-
+        inFavoriteChange(!changeFavorite);
         if (!changeFavorite) {
             loadFavorite();
+
         }
         else {
             searchUser(searchName);
         }
         setChangeFavorite(!changeFavorite);
+        
     }
 
     const search = async () => {
@@ -32,6 +34,7 @@ export default function Menu(props) {
             setChangeFavorite(false);
             searchUser(searchName);
         }
+        inFavoriteChange(false);
     }
 
     return (

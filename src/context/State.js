@@ -1,13 +1,10 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useReducer, useEffect, useState } from 'react';
 import { Context } from './context';
 import { reducer } from './reducer';
 import axios from 'axios';
 import { Keyboard, Alert } from 'react-native';
 import { SEARCH, GET_USER, LOADING } from './types';
 import { AsyncStorage } from 'react-native';
-
-
-
 
 const initialState = {
     users: [],
@@ -16,45 +13,58 @@ const initialState = {
 };
 export default function ({ children }) {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const [favorite, setFavorite] = useState([]);
+    const [inFavorite, setInFavorite] = useState(false);
     const FAVORITE = 'FAVORITE';
 
     useEffect(() => {
-        //  setStorage();
-    });
+        setStorage();
+    }, []);
 
     const setStorage = async () => {
-        // const data = [{ "avatar_url": "https://avatars0.githubusercontent.com/u/57111386?v=4", "login": "Yasha33", }];
-        // try {
-        //     await AsyncStorage.setItem(FAVORITE, JSON.stringify(data));
-        // } catch (error) {
-        //     Alert.alert('Error Favotite', error);
-        // }
-        await AsyncStorage.removeItem(FAVORITE);
+        try {
+            const data = JSON.parse(await AsyncStorage.getItem(FAVORITE));
+            if (data)
+                setFavorite(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const inFavoriteChange = (status) => {
+        setInFavorite(status);     
+    }
+
+    const changeUsers = (newArray) => {
+        dispatch({
+            type: SEARCH,
+            payload: newArray,
+        });
     }
 
     const searchUser = async (name) => {
         Keyboard.dismiss();
         let data = [];
         if (name) {
-
             try {
                 const response = await axios.get(`https://api.github.com/search/users?q=${name}`);
-                data = response.data.items.map(el => ({ login: el.login, avatar_url: el.avatar_url }));
+                data = response.data.items.map(el => ({
+                    login: el.login,
+                    avatar_url: el.avatar_url,
+                    favorite: checkFavorite(el.login)
+                }));
             }
             catch (e) {
-                Alert.alert('Incorect request');
+                console.log(e);
             }
         }
-        dispatch({
-            type: SEARCH,
-            payload: data,
-        });
+        changeUsers(data);
     };
 
+    const checkFavorite = login => favorite.some(el => el.login === login)
+
     const selectedUser = async (login) => {
-
         const info = state.users.find(el => el.login === login);
-
         try {
             const response = await axios.get(`https://api.github.com/users/${login}/repos`);
             const infoRep = response.data.map(el => ({
@@ -70,7 +80,7 @@ export default function ({ children }) {
             })
         }
         catch (e) {
-            Alert.alert('Incorect request');
+            console.log(e);
         }
     }
 
@@ -81,44 +91,28 @@ export default function ({ children }) {
         })
     }
 
-    const loadFavorite = async () => {
+    const loadFavorite = () => changeUsers(favorite);
 
-        try {
-            const value = JSON.parse(await AsyncStorage.getItem(FAVORITE));
-            if (value !== null) {
-                // We have data!!
-                // console.log('all storaged users', value);
-                dispatch({
-                    type: SEARCH,
-                    payload: value,
-                });
+    const changeFavoriteStatus = (login, status) => {
+        const users = state.users.map(el => el.login === login ? ({ ...el, favorite: !status }) : el);
+
+        if (status) {
+            const newFavorite = favorite.filter(el => el.login !== login);
+            setFavorite([...newFavorite]);
+
+            if (inFavorite) {
+                changeUsers(newFavorite);
+                return
             }
-        } catch (error) {
-            // Error retrieving data
         }
-    }
-    const changeFavoriteStatus = async (login) => {
-
-        try {
-            const allFavorite = JSON.parse(await AsyncStorage.getItem(FAVORITE)) || [];
-            const addFavorite = state.users.find(el => el.login === login);
-
-            if (allFavorite.some(el => el.login === login)) {
-                const newAllFavorite = allFavorite.filter(el => el.login !== login);
-                await AsyncStorage.setItem(FAVORITE, JSON.stringify(newAllFavorite));
-                await loadFavorite();
-                return 'Removed from favotire';
-
-            } else {
-                const newAllFavorite = [...allFavorite, addFavorite];
-                await AsyncStorage.setItem(FAVORITE, JSON.stringify(newAllFavorite));
-                return 'Add to favorite';
-            }
-
-        } catch (error) {
-            console.log('Error', error);
-
+        else {
+            const user = state.users.find(el => el.login === login);
+            user.favorite = !status;
+            setFavorite([...favorite, user]);
         }
+        console.log('Шляпа');
+        
+        changeUsers(users);
     }
 
 
@@ -132,7 +126,8 @@ export default function ({ children }) {
                 loading: state.loading,
                 loadFavorite,
                 loadingIndicator,
-                changeFavoriteStatus
+                changeFavoriteStatus,
+                inFavoriteChange
             }}
         >
             {children}

@@ -1,13 +1,12 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { TouchableOpacity, StyleSheet, Image, Text, Dimensions, Alert } from 'react-native';
 import { Context } from '../context/context';
 import { useNavigation } from '@react-navigation/native';
-import Toast from 'react-native-easy-toast';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function ItemLists({ item }) {
-    const { selectedUser, loadingIndicator, changeFavoriteStatus} = useContext(Context);
+    const { selectedUser, loadingIndicator, changeFavoriteStatus } = useContext(Context);
     const navigation = useNavigation();
-    const toast = useRef(null);
 
     const select = async () => {
         loadingIndicator(true);
@@ -16,13 +15,15 @@ export default function ItemLists({ item }) {
         navigation.navigate('Details');
     }
 
-    const longPress= async()=>{
-        const status = await changeFavoriteStatus(item.login);
-        Alert.alert(status);
-        // toast.current.show(status,700);
+    const longPress = async () => {
+        // const status = await changeFavoriteStatus(item.login);
+        // Alert.alert(status);
+    }
+    const favotite= ()=>{
+        changeFavoriteStatus(item.login,item.favorite);
     }
     return (
-        <>
+        
             <TouchableOpacity
                 style={styles.button}
                 onPress={select}
@@ -33,14 +34,11 @@ export default function ItemLists({ item }) {
                     source={{ uri: item.avatar_url }}
                 />
                 <Text style={styles.text}>{item.login}</Text>
-
+                <TouchableOpacity style={styles.star} onPress={() => favotite()} >
+                    {!item.favorite ? <AntDesign name="staro" size={24} color="black" /> : <AntDesign name="star" size={24} color="gold" />}
+                </TouchableOpacity>
             </TouchableOpacity>
-            <Toast
-                style={{ backgroundColor: null }}
-                textStyle={{ color: 'black' }}
-                position='center'
-                ref={toast} />
-        </>
+        
     )
 }
 
@@ -54,7 +52,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f1f1f1',
         borderRadius: 10,
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 10,
         width: '99%'
@@ -67,6 +65,10 @@ const styles = StyleSheet.create({
     },
     text: {
         maxWidth: Dimensions.get('window').width - 170,
-        marginLeft: 20
+        marginLeft: -20
+    },
+    star:{
+        padding:15,
+        // borderWidth:1
     }
 })
