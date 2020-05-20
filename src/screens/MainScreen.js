@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { View, Text, StatusBar, StyleSheet, Button, ActivityIndicator } from 'react-native';
+import { View, Text, StatusBar, StyleSheet} from 'react-native';
 import Menu from '../components/Menu';
 import ListUsers from '../components/ListUsers';
 import { Context } from '../context/context';
@@ -17,6 +17,7 @@ export default function MainScreen() {
       <Menu />
       {content}
       <ModalLoading status={loading}/>
+      
     </View>
   );
 }

@@ -3,15 +3,41 @@ import { StyleSheet, TouchableOpacity, TextInput } from 'react-native'
 import { AntDesign, Feather } from '@expo/vector-icons';
 import { Context } from '../context/context'
 
+
 export default function Menu(props) {
     const inputEl = useRef(null);
-    const { searchUser } = useContext(Context);
-    const [searchName, setSearchName] = useState(null);
+    const { searchUser, loadFavorite, loadingIndicator } = useContext(Context);
+    const [searchName, setSearchName] = useState('');
+    const [changeFavorite, setChangeFavorite] = useState(false);
+    
+    const favotite = () => {
+
+        if (!changeFavorite) {
+            loadFavorite();
+        }
+        else {
+            searchUser(searchName);
+        }
+        setChangeFavorite(!changeFavorite);
+    }
+
+    const search = async () => {
+        if (searchName) {
+            setChangeFavorite(false);
+            loadingIndicator(true);
+            await searchUser(searchName);
+            loadingIndicator(false);
+        }
+        else {
+            setChangeFavorite(false);
+            searchUser(searchName);
+        }
+    }
 
     return (
         <TouchableOpacity style={styles.wrapper} onPress={() => inputEl.current.focus()} >
-            <TouchableOpacity style={styles.buttons}>
-                <AntDesign name="staro" size={24} color="black" />
+            <TouchableOpacity style={styles.buttons} onPress={() => favotite()} >
+                {!changeFavorite ? <AntDesign name="staro" size={24} color="black" /> : <AntDesign name="star" size={24} color="gold" />}
             </TouchableOpacity>
             <TextInput
                 placeholder='Enter name'
@@ -21,9 +47,8 @@ export default function Menu(props) {
                 value={searchName}
                 onChangeText={(setSearchName)}
                 autoCorrect={false}
-
             />
-            <TouchableOpacity onPress={() => searchUser(searchName)} style={styles.buttons}>
+            <TouchableOpacity onPress={search} style={styles.buttons}>
                 <Feather name="search" size={24} color="black" />
             </TouchableOpacity>
         </TouchableOpacity>

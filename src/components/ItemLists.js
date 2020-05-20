@@ -1,29 +1,46 @@
-import React, { useContext } from 'react';
-import { TouchableOpacity, StyleSheet, Image, Text, Dimensions } from 'react-native';
+import React, { useContext, useRef } from 'react';
+import { TouchableOpacity, StyleSheet, Image, Text, Dimensions, Alert } from 'react-native';
 import { Context } from '../context/context';
 import { useNavigation } from '@react-navigation/native';
+import Toast from 'react-native-easy-toast';
 
 export default function ItemLists({ item }) {
-    const { selectedUser, loadingIndicatorOn,loadingIndicatorOff, loading } = useContext(Context);
+    const { selectedUser, loadingIndicator, changeFavoriteStatus} = useContext(Context);
     const navigation = useNavigation();
+    const toast = useRef(null);
 
-    const select = async() => {
-        loadingIndicatorOn();
+    const select = async () => {
+        loadingIndicator(true);
         await selectedUser(item.login);
-        loadingIndicatorOff();
+        loadingIndicator(false);
         navigation.navigate('Details');
     }
+
+    const longPress= async()=>{
+        const status = await changeFavoriteStatus(item.login);
+        Alert.alert(status);
+        // toast.current.show(status,700);
+    }
     return (
-        <TouchableOpacity
-            style={styles.button}
-            onPress={select}
-        >
-            <Image
-                style={styles.image}
-                source={{ uri: item.avatar_url }}
-            />
-            <Text style={styles.text}>{item.login}</Text>
-        </TouchableOpacity>
+        <>
+            <TouchableOpacity
+                style={styles.button}
+                onPress={select}
+                onLongPress={longPress}
+            >
+                <Image
+                    style={styles.image}
+                    source={{ uri: item.avatar_url }}
+                />
+                <Text style={styles.text}>{item.login}</Text>
+
+            </TouchableOpacity>
+            <Toast
+                style={{ backgroundColor: null }}
+                textStyle={{ color: 'black' }}
+                position='center'
+                ref={toast} />
+        </>
     )
 }
 
