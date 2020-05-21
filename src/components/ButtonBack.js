@@ -3,7 +3,6 @@ import { TouchableOpacity, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-
 export default function Button() {
     const navigation=useNavigation();
     return (

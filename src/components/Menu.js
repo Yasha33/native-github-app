@@ -4,35 +4,33 @@ import { AntDesign, Feather } from '@expo/vector-icons';
 import { Context } from '../context/context'
 
 
-export default function Menu(props) {
+export default function Menu() {
     const inputEl = useRef(null);
-    const { searchUser, loadFavorite, loadingIndicator,inFavoriteChange} = useContext(Context);
-    const [searchName, setSearchName] = useState('');
+    const { searchUser, loadFavorite, loadingIndicator,inFavoriteChange,input, changeInput } = useContext(Context);
     const [changeFavorite, setChangeFavorite] = useState(false);
     
     const favotite = () => {
         inFavoriteChange(!changeFavorite);
         if (!changeFavorite) {
             loadFavorite();
-
         }
         else {
-            searchUser(searchName);
+            searchUser(input);
         }
         setChangeFavorite(!changeFavorite);
         
     }
 
     const search = async () => {
-        if (searchName) {
+        if (input) {
             setChangeFavorite(false);
             loadingIndicator(true);
-            await searchUser(searchName);
+            await searchUser(input);
             loadingIndicator(false);
         }
         else {
             setChangeFavorite(false);
-            searchUser(searchName);
+            searchUser(input);
         }
         inFavoriteChange(false);
     }
@@ -47,9 +45,10 @@ export default function Menu(props) {
                 style={styles.input}
                 pointerEvents="none"
                 ref={inputEl}
-                value={searchName}
-                onChangeText={(setSearchName)}
+                value={input}
+                onChangeText={(changeInput)}
                 autoCorrect={false}
+                maxLength={30}
             />
             <TouchableOpacity onPress={search} style={styles.buttons}>
                 <Feather name="search" size={24} color="black" />

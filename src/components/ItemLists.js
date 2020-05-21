@@ -14,24 +14,24 @@ export default function ItemLists({ item }) {
         loadingIndicator(false);
         navigation.navigate('Details');
     }
-    const favorite= ()=>changeFavoriteStatus(item.login,item.favorite);
+    const favorite = () => changeFavoriteStatus(item.login, item.favorite);
 
     return (
-        
+        <TouchableOpacity
+            style={styles.button}
+            onPress={select}
+        >
+            <Image
+                style={styles.image}
+                source={{ uri: item.avatar_url }}
+            />
+            <Text style={styles.text}>{item.login}</Text>
             <TouchableOpacity
-                style={styles.button}
-                onPress={select}
-            >
-                <Image
-                    style={styles.image}
-                    source={{ uri: item.avatar_url }}
-                />
-                <Text style={styles.text}>{item.login}</Text>
-                <TouchableOpacity style={styles.star} onPress={favorite} >
-                    {!item.favorite ? <AntDesign name="staro" size={24} color="black" /> : <AntDesign name="star" size={24} color="gold" />}
-                </TouchableOpacity>
+                style={styles.star}
+                onPress={favorite} >
+                {!item.favorite ? <AntDesign name="staro" size={24} color="black" /> : <AntDesign name="star" size={24} color="gold" />}
             </TouchableOpacity>
-        
+        </TouchableOpacity>
     )
 }
 
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         maxWidth: Dimensions.get('window').width - 170,
         marginLeft: -20
     },
-    star:{
-        padding:15,
+    star: {
+        padding: 15,
     }
 })

@@ -10,11 +10,13 @@ const initialState = {
     users: [],
     userInfo: {},
     loading: false,
-    favorite:[],
+    favorite: [],
 };
 export default function ({ children }) {
     const [state, dispatch] = useReducer(reducer, initialState);
     const [inFavorite, setInFavorite] = useState(false);
+    const [length, setLength] = useState(5);
+    const [input, setInput] = useState('');
     const FAVORITE = 'FAVORITE';
 
     useEffect(() => {
@@ -23,7 +25,14 @@ export default function ({ children }) {
 
     useEffect(() => {
         setStorage(state.favorite);
-    }, [state.favorite])
+    }, [state.favorite]);
+
+    useEffect(()=>{
+        if(!inFavorite)
+        searchUser(input);
+        else
+        loadFavorite();
+    },[length]);
 
     const readStorage = async () => {
         try {
@@ -32,19 +41,19 @@ export default function ({ children }) {
         } catch (error) {
             console.log(error);
         }
-        
+
     }
     const setStorage = async (array) => {
         try {
-            await AsyncStorage.setItem(FAVORITE, JSON.stringify(array));          
-            
+            await AsyncStorage.setItem(FAVORITE, JSON.stringify(array));
+
         } catch (error) {
             console.log(error);
 
         }
     }
 
-    const inFavoriteChange = (status) =>setInFavorite(status);
+    const inFavoriteChange = (status) => setInFavorite(status);
 
     const changeUsers = (newArray) => {
         dispatch({
@@ -53,10 +62,10 @@ export default function ({ children }) {
         });
     }
 
-    const setFavorite = (array)=>{
+    const setFavorite = (array) => {
         dispatch({
-            type:CHANGE_FAVORITE,
-            payload:array,
+            type: CHANGE_FAVORITE,
+            payload: array,
         })
     }
 
@@ -76,7 +85,9 @@ export default function ({ children }) {
                 console.log(e);
             }
         }
-        changeUsers(data);
+
+
+        changeUsers(checkUserLength(data));
     };
 
     const checkFavorite = login => state.favorite.some(el => el.login === login)
@@ -109,7 +120,7 @@ export default function ({ children }) {
         })
     }
 
-    const loadFavorite = () => changeUsers(state.favorite);
+    const loadFavorite = () => changeUsers(checkUserLength(state.favorite));
 
     const changeFavoriteStatus = (login, status) => {
         const users = state.users.map(el => el.login === login ? ({ ...el, favorite: !status }) : el);
@@ -117,7 +128,7 @@ export default function ({ children }) {
         if (status) {
             const newFavorite = state.favorite.filter(el => el.login !== login);
             setFavorite(newFavorite);
-            
+
             if (inFavorite) {
                 changeUsers(newFavorite);
                 return
@@ -126,12 +137,22 @@ export default function ({ children }) {
         else {
             const user = state.users.find(el => el.login === login);
             user.favorite = !status;
-            setFavorite([...state.favorite,user]);
-            
+            setFavorite([...state.favorite, user]);
+
         }
         changeUsers(users);
     }
+    const checkUserLength = (data) => data.slice(0, length);
 
+    const changeLength = value =>{
+        setLength(+value);
+        // if(!inFavorite)
+        // searchUser(input);
+        // else
+        // loadFavorite();
+    }
+
+    const changeInput = string => setInput(string);
     return (
         <Context.Provider
             value={{
@@ -143,7 +164,11 @@ export default function ({ children }) {
                 loadFavorite,
                 loadingIndicator,
                 changeFavoriteStatus,
-                inFavoriteChange
+                inFavoriteChange,
+                changeLength,
+                length,
+                input,
+                changeInput
             }}
         >
             {children}

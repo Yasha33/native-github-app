@@ -13,7 +13,6 @@ export default function ListOfRep(props) {
             renderItem={({ item }) => <ItemRep title={item} />}
             keyExtractor={item => item.name}
         />
-
     )
 }
 const styles = StyleSheet.create({
