@@ -1,4 +1,4 @@
-import { SEARCH, GET_USER, LOADING } from './types'
+import { SEARCH, GET_USER, LOADING, CHANGE_FAVORITE } from './types'
 
 const handlers = {
     [SEARCH]: (state, { payload }) => ({
@@ -12,6 +12,10 @@ const handlers = {
     [LOADING]: (state, { payload }) => ({
         ...state,
         loading: payload
+    }),
+    [CHANGE_FAVORITE]:(state, {payload}) =>({
+        ...state,
+        favorite:[...payload]
     }),
 
     DEFAULT: state => state
