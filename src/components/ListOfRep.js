@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
-import { FlatList, Text, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import { Context } from '../context/context';
 import ItemRep from './ItemRep';
 
-
-export default function ListOfRep(props) {
+export default function ListOfRep() {
     const { userInfo } = useContext(Context);
     return (
         <FlatList

@@ -31,6 +31,4 @@ const styles = StyleSheet.create({
         fontSize: 18,
         padding:5
     },
-   
-
 })

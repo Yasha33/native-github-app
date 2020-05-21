@@ -1,8 +1,8 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext } from 'react';
 import { TouchableOpacity, StyleSheet, Image, Text, Dimensions } from 'react-native';
-import { Context } from '../context/context';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
+import { Context } from '../context/context';
 
 export default function ItemLists({ item }) {
     const { selectedUser, loadingIndicator, changeFavoriteStatus } = useContext(Context);
@@ -29,7 +29,9 @@ export default function ItemLists({ item }) {
             <TouchableOpacity
                 style={styles.star}
                 onPress={favorite} >
-                {!item.favorite ? <AntDesign name="staro" size={24} color="black" /> : <AntDesign name="star" size={24} color="gold" />}
+                {!item.favorite
+                    ? <AntDesign name="staro" size={24} color="black" />
+                    : <AntDesign name="star" size={24} color="gold" />}
             </TouchableOpacity>
         </TouchableOpacity>
     )
@@ -54,7 +56,6 @@ const styles = StyleSheet.create({
         height: 100,
         width: 100,
         borderRadius: 10,
-
     },
     text: {
         maxWidth: Dimensions.get('window').width - 170,

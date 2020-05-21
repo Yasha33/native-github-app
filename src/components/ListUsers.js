@@ -4,10 +4,10 @@ import ItemLists from './ItemLists'
 import { Context } from '../context/context';
 
 
-
-export default function ListUsers(props) {
+export default function ListUsers() {
 
     const { users, length, changeLength } = useContext(Context)
+
     return (
         <View style={styles.wrapper}>
             <FlatList
@@ -20,13 +20,13 @@ export default function ListUsers(props) {
                 style={styles.onePicker} itemStyle={styles.onePickerItem}
                 selectedValue={`${length}`}
                 onValueChange={changeLength}
-        >
-            <Picker.Item label="5" value="5" />
-            <Picker.Item label="10" value="10" />
-            <Picker.Item label="15" value="15" />
-            <Picker.Item label="All" value="30" />
-        </Picker>
-        </View >   
+            >
+                <Picker.Item label="5" value="5" />
+                <Picker.Item label="10" value="10" />
+                <Picker.Item label="15" value="15" />
+                <Picker.Item label="All" value="30" />
+            </Picker>
+        </View >
     )
 }
 
@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
         marginTop: 7,
         padding: 7,
     },
-
     wrapper: {
         flex: 1,
         justifyContent: 'space-between',

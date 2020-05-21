@@ -8,7 +8,8 @@ import NotFoundRep from '../components/NotFoundRep';
 export default function UserScreen() {
   const { userInfo } = useContext(Context);
 
-  let content = userInfo.rep.length ? <ListOfRep /> : <NotFoundRep />
+  const content = userInfo.rep.length ? <ListOfRep /> : <NotFoundRep />
+
   return (
     <View style={styles.wrapper}>
       <ButtonBack />
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     paddingVertical: 25,
     paddingHorizontal: 10,
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   avatar: {
     height: 100,
@@ -33,6 +34,6 @@ const styles = StyleSheet.create({
   },
   text: {
     margin: 15,
-    fontSize: 20
+    fontSize: 20,
   }
 })

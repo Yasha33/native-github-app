@@ -1,10 +1,9 @@
 import React, { useReducer, useEffect, useState } from 'react';
+import { Keyboard, AsyncStorage } from 'react-native';
+import axios from 'axios';
 import { Context } from './context';
 import { reducer } from './reducer';
-import axios from 'axios';
-import { Keyboard, Alert } from 'react-native';
 import { SEARCH, GET_USER, LOADING, CHANGE_FAVORITE } from './types';
-import { AsyncStorage } from 'react-native';
 
 const initialState = {
     users: [],
@@ -12,6 +11,7 @@ const initialState = {
     loading: false,
     favorite: [],
 };
+
 export default function ({ children }) {
     const [state, dispatch] = useReducer(reducer, initialState);
     const [inFavorite, setInFavorite] = useState(false);
@@ -27,12 +27,12 @@ export default function ({ children }) {
         setStorage(state.favorite);
     }, [state.favorite]);
 
-    useEffect(()=>{
-        if(!inFavorite)
-        searchUser(input);
+    useEffect(() => {
+        if (!inFavorite)
+            searchUser(input);
         else
-        loadFavorite();
-    },[length]);
+            loadFavorite();
+    }, [length]);
 
     const readStorage = async () => {
         try {
@@ -41,7 +41,6 @@ export default function ({ children }) {
         } catch (error) {
             console.log(error);
         }
-
     }
     const setStorage = async (array) => {
         try {
@@ -49,7 +48,6 @@ export default function ({ children }) {
 
         } catch (error) {
             console.log(error);
-
         }
     }
 
@@ -72,6 +70,7 @@ export default function ({ children }) {
     const searchUser = async (name) => {
         Keyboard.dismiss();
         let data = [];
+        
         if (name) {
             try {
                 const response = await axios.get(`https://api.github.com/search/users?q=${name}`);
@@ -85,7 +84,6 @@ export default function ({ children }) {
                 console.log(e);
             }
         }
-
 
         changeUsers(checkUserLength(data));
     };
@@ -144,13 +142,7 @@ export default function ({ children }) {
     }
     const checkUserLength = (data) => data.slice(0, length);
 
-    const changeLength = value =>{
-        setLength(+value);
-        // if(!inFavorite)
-        // searchUser(input);
-        // else
-        // loadFavorite();
-    }
+    const changeLength = value => setLength(+value);
 
     const changeInput = string => setInput(string);
     return (
